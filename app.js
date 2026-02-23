@@ -291,16 +291,31 @@ async function sendOrder() {
   if (!name || !phone || !address) { showToast('Preencha todos os campos obrigatórios'); return; }
   const subtotal = cart.reduce((s,i) => s + i.preco * i.qty, 0);
   const total = subtotal + freteValue;
+  const itens = cart.map(i => ({nome:i.nome, qty:i.qty, preco:i.preco, tamanho:i.tamanho||'', cor:i.cor||''}));
   // Salvar pedido na API
+  let pedidoId = '';
   try {
-    const pedido = { nome: name, whatsapp: phone, email, endereco: address, cep, cidade: city,
-      itens: cart.map(i => ({nome:i.nome, qty:i.qty, preco:i.preco, tamanho:i.tamanho||'', cor:i.cor||''})),
-      subtotal, frete: freteValue, total };
+    const pedido = { nome: name, whatsapp: phone, email, endereco: address, cep, cidade: city, itens, subtotal, frete: freteValue, total };
     const r = await fetch(API_URL+'/pedidos', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(pedido)});
     const d = await r.json();
-    var pedidoId = d.id || '';
-  } catch(e) { var pedidoId = ''; }
-  // Enviar via WhatsApp
+    pedidoId = d.id || '';
+  } catch(e) {}
+  // Criar pagamento no Mercado Pago
+  try {
+    const mp = await fetch(API_URL+'/pagamento', {method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({itens, frete: freteValue, nome: name, email, pedido_id: pedidoId})});
+    const mpData = await mp.json();
+    if (mpData.init_point) {
+      // Enviar resumo via WhatsApp
+      let msg = `*Pedido Huios* 🛒 #${pedidoId}\n*Cliente:* ${name}\n*WhatsApp:* ${phone}\n*Total: R$ ${total.toFixed(2).replace('.',',')}*\nPagamento via Mercado Pago`;
+      window.open(`https://wa.me/${STORE.whatsapp}?text=${encodeURIComponent(msg)}`, '_blank');
+      // Redirecionar pro checkout MP
+      window.location.href = mpData.init_point;
+      cart = []; saveCart();
+      return;
+    }
+  } catch(e) { console.log('MP erro, fallback pix', e); }
+  // Fallback: Pix manual via WhatsApp
   let msg = `*Novo pedido Huios Store* 🛒${pedidoId ? ' #'+pedidoId : ''}\n\n`;
   msg += `*Cliente:* ${name}\n*WhatsApp:* ${phone}\n*Email:* ${email}\n\n`;
   msg += `*Endereço:*\n${address}\n${city} - CEP: ${cep}\n\n`;
@@ -309,10 +324,8 @@ async function sendOrder() {
   msg += `\n*Frete:* ${freteValue>0?'R$ '+freteValue.toFixed(2).replace('.',','):'Grátis'} ${freteLabel}\n`;
   msg += `*Total: R$ ${total.toFixed(2).replace('.',',')}*\n\n`;
   msg += `Pagamento via Pix: ${STORE.pix}`;
-  const url = `https://wa.me/${STORE.whatsapp}?text=${encodeURIComponent(msg)}`;
-  window.open(url, '_blank');
-  cart = [];
-  saveCart();
+  window.open(`https://wa.me/${STORE.whatsapp}?text=${encodeURIComponent(msg)}`, '_blank');
+  cart = []; saveCart();
   showToast('Pedido #' + (pedidoId||'') + ' registrado! Obrigado 🙏');
 }
 
