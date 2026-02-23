@@ -179,7 +179,7 @@
         <div class="form-group">
           <label>CEP</label>
           <div style="display:flex;gap:8px;">
-            <input type="text" id="ckCep" maxlength="9" oninput="maskCep(this)" style="flex:1;">
+            <input type="text" id="ckCep" maxlength="9" oninput="maskCep(this);if(this.value.replace(/\D/g,'').length===8)calcFreteCheckout()" style="flex:1;">
             <button class="btn btn-sm btn-outline" onclick="calcFreteCheckout()" style="white-space:nowrap;">Calcular frete</button>
           </div>
           <div id="freteCheckout" style="margin-top:8px;"></div>
@@ -242,6 +242,6 @@
   <!-- Toast -->
   <div class="toast" id="toast"></div>
 
-  <script src="app.js?v=12"></script>
+  <script src="app.js?v=13"></script>
 </body>
 </html>

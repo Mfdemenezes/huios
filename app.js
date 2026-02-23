@@ -330,6 +330,8 @@ async function goCheckout() {
   document.getElementById('orderSummary').innerHTML = html;
   if (!document.getElementById('ckCep').value) document.getElementById('ckCep').value = document.getElementById('cepInput')?.value || '';
   document.getElementById('checkoutSection').scrollIntoView({ behavior: 'smooth' });
+  // Auto-calcular frete se CEP já preenchido
+  if (document.getElementById('ckCep').value.replace(/\D/g,'').length === 8) calcFreteCheckout();
 }
 
 function copyPix() {
