@@ -141,7 +141,7 @@ nav a:hover, nav a.active { color: var(--accent); }
 footer { background: var(--surface); border-top: 1px solid var(--border); padding: 40px 0; margin-top: 60px; }
 .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; }
 .footer-brand { font-size: 20px; font-weight: 800; color: var(--accent); letter-spacing: 2px; margin-bottom: 12px; }
-footer h4 { font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--purple2); margin-bottom: 12px; }
+footer h4 { font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); margin-bottom: 12px; }
 footer p, footer a { font-size: 14px; color: var(--muted); }
 footer a:hover { color: var(--accent); }
 .footer-links { display: flex; flex-direction: column; gap: 8px; }
