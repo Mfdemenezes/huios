@@ -225,7 +225,7 @@ function selectFrete(val, label) {
 }
 
 // ===== CHECKOUT =====
-function goCheckout() {
+async function goCheckout() {
   if (cart.length === 0) return;
   toggleCart();
   document.getElementById('checkoutSection').style.display = 'block';
@@ -233,6 +233,21 @@ function goCheckout() {
   document.querySelector('.hero').style.display = 'none';
   document.getElementById('categories').parentElement.style.display = 'none';
   document.getElementById('produtos').style.display = 'none';
+  // Auto-preencher se logado
+  if (clienteToken) {
+    try {
+      const r = await fetch(API_URL+'/clientes/perfil', {headers:{'Authorization':'Bearer '+clienteToken}});
+      if (r.ok) {
+        const c = await r.json();
+        document.getElementById('ckName').value = c.nome || '';
+        document.getElementById('ckPhone').value = c.whatsapp || '';
+        document.getElementById('ckEmail').value = c.email || '';
+        document.getElementById('ckCep').value = c.cep || '';
+        document.getElementById('ckCity').value = c.cidade || '';
+        document.getElementById('ckAddress').value = c.endereco || '';
+      }
+    } catch(e) {}
+  }
   // Render order summary
   const subtotal = cart.reduce((s,i) => s + i.preco * i.qty, 0);
   const total = subtotal + freteValue;
@@ -245,7 +260,7 @@ function goCheckout() {
   html += `<div class="order-line"><span>Frete ${freteLabel||''}</span><span>${freteValue>0?'R$ '+freteValue.toFixed(2).replace('.',','):'Grátis'}</span></div>`;
   html += `<div class="order-line total"><span>Total</span><span style="color:var(--accent);">R$ ${total.toFixed(2).replace('.',',')}</span></div>`;
   document.getElementById('orderSummary').innerHTML = html;
-  document.getElementById('ckCep').value = document.getElementById('cepInput')?.value || '';
+  if (!document.getElementById('ckCep').value) document.getElementById('ckCep').value = document.getElementById('cepInput')?.value || '';
   document.getElementById('checkoutSection').scrollIntoView({ behavior: 'smooth' });
 }
 
@@ -254,7 +269,7 @@ function copyPix() {
   showToast('Chave Pix copiada! ✅');
 }
 
-function sendOrder() {
+async function sendOrder() {
   const name = document.getElementById('ckName').value;
   const phone = document.getElementById('ckPhone').value;
   const email = document.getElementById('ckEmail').value;
@@ -264,7 +279,17 @@ function sendOrder() {
   if (!name || !phone || !address) { showToast('Preencha todos os campos obrigatórios'); return; }
   const subtotal = cart.reduce((s,i) => s + i.preco * i.qty, 0);
   const total = subtotal + freteValue;
-  let msg = `*Novo pedido Huios Store* 🛒\n\n`;
+  // Salvar pedido na API
+  try {
+    const pedido = { nome: name, whatsapp: phone, email, endereco: address, cep, cidade: city,
+      itens: cart.map(i => ({nome:i.nome, qty:i.qty, preco:i.preco, tamanho:i.tamanho||'', cor:i.cor||''})),
+      subtotal, frete: freteValue, total };
+    const r = await fetch(API_URL+'/pedidos', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(pedido)});
+    const d = await r.json();
+    var pedidoId = d.id || '';
+  } catch(e) { var pedidoId = ''; }
+  // Enviar via WhatsApp
+  let msg = `*Novo pedido Huios Store* 🛒${pedidoId ? ' #'+pedidoId : ''}\n\n`;
   msg += `*Cliente:* ${name}\n*WhatsApp:* ${phone}\n*Email:* ${email}\n\n`;
   msg += `*Endereço:*\n${address}\n${city} - CEP: ${cep}\n\n`;
   msg += `*Produtos:*\n`;
@@ -274,10 +299,9 @@ function sendOrder() {
   msg += `Pagamento via Pix: ${STORE.pix}`;
   const url = `https://wa.me/${STORE.whatsapp}?text=${encodeURIComponent(msg)}`;
   window.open(url, '_blank');
-  // Limpar carrinho
   cart = [];
   saveCart();
-  showToast('Pedido enviado! Obrigado 🙏');
+  showToast('Pedido #' + (pedidoId||'') + ' registrado! Obrigado 🙏');
 }
 
 // ===== TOAST =====

@@ -84,7 +84,7 @@ label{display:block;font-size:12px;color:#888;margin-bottom:4px;font-weight:600;
 
 <!-- PEDIDOS -->
 <div class="panel" id="tab-pedidos">
-  <table><thead><tr><th>ID</th><th>Cliente</th><th>Total</th><th>Status</th><th>Data</th><th></th></tr></thead>
+  <table><thead><tr><th>ID</th><th>Cliente</th><th>Itens</th><th>Total</th><th>Status</th><th>Data</th><th></th></tr></thead>
   <tbody id="pedTable"></tbody></table>
 </div>
 </div>
@@ -262,20 +262,26 @@ async function loadPedidos() {
   const r = await fetch(API+'/pedidos', {headers: headers()});
   const peds = await r.json();
   document.getElementById('pedTable').innerHTML = peds.map(p => {
-    const badge = p.status==='pendente'?'badge-pend':p.status==='enviado'?'badge-ok':'badge-off';
+    const badge = p.status==='pendente'?'badge-pend':p.status==='pago'?'badge-ok':p.status==='enviado'?'badge-ok':p.status==='entregue'?'badge-ok':'badge-off';
     const dt = new Date(p.created_at).toLocaleDateString('pt-BR');
+    const itens = (p.itens||[]).map(i => `${i.qty}x ${i.nome} ${i.tamanho?'('+i.tamanho+')':''} ${i.cor||''} — R$ ${(i.preco*i.qty).toFixed(2).replace('.',',')}`).join('<br>');
     return `<tr>
-      <td>#${p.id}</td><td>${p.cliente_nome}<br><small style="color:#888">${p.cliente_whatsapp}</small></td>
-      <td>R$ ${p.total.toFixed(2).replace('.',',')}</td>
+      <td>#${p.id}</td>
+      <td><strong>${p.cliente_nome}</strong><br><small style="color:#888">${p.cliente_whatsapp||''}</small><br><small style="color:#666">${p.cliente_email||''}</small></td>
+      <td style="font-size:12px">${itens}<br><small style="color:#888">Frete: R$ ${p.frete.toFixed(2).replace('.',',')}</small></td>
+      <td><strong style="color:#e85d26">R$ ${p.total.toFixed(2).replace('.',',')}</strong></td>
       <td><span class="badge ${badge}">${p.status}</span></td><td>${dt}</td>
-      <td><select onchange="updatePedStatus(${p.id},this.value)" style="padding:4px;background:#1a1a1a;border:1px solid #2a2a2a;color:#f5f5f5;border-radius:4px">
-        <option ${p.status==='pendente'?'selected':''}>pendente</option>
-        <option ${p.status==='pago'?'selected':''}>pago</option>
-        <option ${p.status==='enviado'?'selected':''}>enviado</option>
-        <option ${p.status==='entregue'?'selected':''}>entregue</option>
-        <option ${p.status==='cancelado'?'selected':''}>cancelado</option>
-      </select></td></tr>`;
-  }).join('') || '<tr><td colspan="6" style="text-align:center;color:#888;padding:40px">Nenhum pedido ainda</td></tr>';
+      <td>
+        <select onchange="updatePedStatus(${p.id},this.value)" style="padding:4px;background:#1a1a1a;border:1px solid #2a2a2a;color:#f5f5f5;border-radius:4px">
+          <option ${p.status==='pendente'?'selected':''}>pendente</option>
+          <option ${p.status==='pago'?'selected':''}>pago</option>
+          <option ${p.status==='enviado'?'selected':''}>enviado</option>
+          <option ${p.status==='entregue'?'selected':''}>entregue</option>
+          <option ${p.status==='cancelado'?'selected':''}>cancelado</option>
+        </select>
+        <br><small style="color:#666;cursor:pointer" onclick="alert('${(p.endereco||'').replace(/'/g,'')}\n${p.cidade||''} - CEP: ${p.cep||''}')">📍 Endereço</small>
+      </td></tr>`;
+  }).join('') || '<tr><td colspan="7" style="text-align:center;color:#888;padding:40px">Nenhum pedido ainda</td></tr>';
 }
 async function updatePedStatus(id, status) {
   await fetch(API+'/pedidos/'+id+'/status', {method:'PUT', headers: headers(), body: JSON.stringify({status})});
