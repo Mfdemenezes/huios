@@ -69,7 +69,7 @@ function renderProducts(list) {
         <div class="product-cat">${p.categoria}</div>
         <div class="product-name">${p.nome}</div>
         <div class="product-desc">${p.descricao}</div>
-        <div class="product-price">R$ ${p.preco.toFixed(2).replace('.',',')} <small>ou 3x de R$ ${(p.preco/3).toFixed(2).replace('.',',')}</small></div>
+        <div class="product-price">R$ ${p.preco.toFixed(2).replace('.',',')}</div>
       </div>
     </div>
   `).join('');
