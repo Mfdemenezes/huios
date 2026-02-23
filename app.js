@@ -2,7 +2,11 @@
 const API_URL = window.location.origin + '/api';
 let STORE = {};
 let PRODUCTS = [];
-let cart = JSON.parse(localStorage.getItem('huios_cart') || '[]');
+let cart = (function() {
+  const saved = localStorage.getItem('huios_cart_ts');
+  if (saved && Date.now() - parseInt(saved) > 86400000) { localStorage.removeItem('huios_cart'); localStorage.removeItem('huios_cart_ts'); }
+  return JSON.parse(localStorage.getItem('huios_cart') || '[]');
+})();
 let clienteToken = localStorage.getItem('huios_cliente_token') || '';
 let clienteNome = localStorage.getItem('huios_cliente_nome') || '';
 let selectedProduct = null;
@@ -143,7 +147,7 @@ function addToCart() {
 
 function removeFromCart(idx) { cart.splice(idx, 1); saveCart(); renderCart(); }
 
-function saveCart() { localStorage.setItem('huios_cart', JSON.stringify(cart)); updateCartCount(); }
+function saveCart() { localStorage.setItem('huios_cart', JSON.stringify(cart)); localStorage.setItem('huios_cart_ts', Date.now().toString()); updateCartCount(); }
 function updateCartCount() { document.getElementById('cartCount').textContent = cart.reduce((s,i) => s + i.qty, 0); }
 
 function toggleCart() {
@@ -235,8 +239,12 @@ function selectFrete(val, label) {
 async function goCheckout() {
   if (cart.length === 0) return;
   if (!clienteToken) {
-    showToast('Faça login ou cadastre-se para finalizar a compra');
-    document.getElementById('accountMenu').classList.add('open');
+    toggleCart();
+    document.getElementById('loginGate').style.display = 'block';
+    document.getElementById('checkoutSection').style.display = 'none';
+    document.querySelector('.hero').style.display = 'none';
+    document.getElementById('produtos').style.display = 'none';
+    document.getElementById('loginGate').scrollIntoView({behavior:'smooth'});
     return;
   }
   toggleCart();
@@ -327,6 +335,38 @@ async function sendOrder() {
   window.open(`https://wa.me/${STORE.whatsapp}?text=${encodeURIComponent(msg)}`, '_blank');
   cart = []; saveCart();
   showToast('Pedido #' + (pedidoId||'') + ' registrado! Obrigado 🙏');
+}
+
+// ===== LOGIN GATE =====
+async function gateDoLogin() {
+  const email = document.getElementById('gateEmail').value, senha = document.getElementById('gateSenha').value;
+  try {
+    const r = await fetch(API_URL+'/clientes/login', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({email, senha})});
+    if (!r.ok) throw new Error();
+    const d = await r.json();
+    clienteToken = d.token; clienteNome = d.nome;
+    localStorage.setItem('huios_cliente_token', d.token);
+    localStorage.setItem('huios_cliente_nome', d.nome);
+    updateAccountUI();
+    document.getElementById('loginGate').style.display = 'none';
+    goCheckout();
+  } catch(e) { document.getElementById('gateErr').textContent = 'Email ou senha inválidos'; }
+}
+async function gateDoRegistro() {
+  const nome = document.getElementById('gateRegNome').value, email = document.getElementById('gateRegEmail').value;
+  const whatsapp = document.getElementById('gateRegWhats').value, senha = document.getElementById('gateRegSenha').value;
+  if (!nome || !email || !senha) { document.getElementById('gateRegErr').textContent = 'Preencha todos os campos'; return; }
+  try {
+    const r = await fetch(API_URL+'/clientes/registro', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({nome, email, whatsapp, senha})});
+    if (!r.ok) { const e = await r.json(); throw new Error(e.detail || 'Erro'); }
+    const d = await r.json();
+    clienteToken = d.token; clienteNome = d.nome;
+    localStorage.setItem('huios_cliente_token', d.token);
+    localStorage.setItem('huios_cliente_nome', d.nome);
+    updateAccountUI();
+    document.getElementById('loginGate').style.display = 'none';
+    goCheckout();
+  } catch(e) { document.getElementById('gateRegErr').textContent = e.message; }
 }
 
 // ===== TOAST =====

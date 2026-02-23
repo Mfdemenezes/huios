@@ -132,6 +132,29 @@
     </div>
   </div>
 
+  <!-- Login Gate -->
+  <section class="checkout-section container" id="loginGate" style="display:none;">
+    <h2 class="section-title">Entrar para <span>Finalizar</span></h2>
+    <div style="max-width:400px;margin:0 auto;">
+      <div id="gateLogin">
+        <input type="email" id="gateEmail" placeholder="Email" style="width:100%;padding:12px;margin-bottom:10px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);">
+        <input type="password" id="gateSenha" placeholder="Senha" style="width:100%;padding:12px;margin-bottom:10px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);">
+        <p id="gateErr" style="color:#f44;font-size:13px;margin-bottom:8px;"></p>
+        <button class="btn btn-primary btn-full" onclick="gateDoLogin()">Entrar</button>
+        <p style="text-align:center;margin-top:12px;color:var(--muted);">Não tem conta? <a href="#" onclick="document.getElementById('gateLogin').style.display='none';document.getElementById('gateReg').style.display='block';return false;" style="color:var(--accent);">Cadastre-se</a></p>
+      </div>
+      <div id="gateReg" style="display:none;">
+        <input type="text" id="gateRegNome" placeholder="Nome" style="width:100%;padding:12px;margin-bottom:10px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);">
+        <input type="email" id="gateRegEmail" placeholder="Email" style="width:100%;padding:12px;margin-bottom:10px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);">
+        <input type="tel" id="gateRegWhats" placeholder="WhatsApp" style="width:100%;padding:12px;margin-bottom:10px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);">
+        <input type="password" id="gateRegSenha" placeholder="Senha" style="width:100%;padding:12px;margin-bottom:10px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);">
+        <p id="gateRegErr" style="color:#f44;font-size:13px;margin-bottom:8px;"></p>
+        <button class="btn btn-primary btn-full" onclick="gateDoRegistro()">Criar conta</button>
+        <p style="text-align:center;margin-top:12px;color:var(--muted);">Já tem conta? <a href="#" onclick="document.getElementById('gateReg').style.display='none';document.getElementById('gateLogin').style.display='block';return false;" style="color:var(--accent);">Entrar</a></p>
+      </div>
+    </div>
+  </section>
+
   <!-- Checkout (hidden by default) -->
   <section class="checkout-section container" id="checkoutSection" style="display:none;">
     <h2 class="section-title">Finalizar <span>Pedido</span></h2>
@@ -217,6 +240,6 @@
   <!-- Toast -->
   <div class="toast" id="toast"></div>
 
-  <script src="app.js?v=4"></script>
+  <script src="app.js?v=5"></script>
 </body>
 </html>
