@@ -146,6 +146,8 @@ function addToCart() {
 }
 
 function removeFromCart(idx) { cart.splice(idx, 1); saveCart(); renderCart(); }
+function changeQty(idx, delta) { cart[idx].qty = Math.max(1, cart[idx].qty + delta); saveCart(); renderCart(); }
+function changeSize(idx, size) { cart[idx].tamanho = size; saveCart(); renderCart(); }
 
 function saveCart() { localStorage.setItem('huios_cart', JSON.stringify(cart)); localStorage.setItem('huios_cart_ts', Date.now().toString()); updateCartCount(); }
 function updateCartCount() { document.getElementById('cartCount').textContent = cart.reduce((s,i) => s + i.qty, 0); }
@@ -169,19 +171,31 @@ function renderCart() {
     return;
   }
   footer.style.display = 'block';
-  el.innerHTML = cart.map((item, i) => `
+  el.innerHTML = cart.map((item, i) => {
+    const prod = PRODUCTS.find(p => p.id === item.id) || {};
+    const tams = (prod.tamanhos || item.tamanho || '').split(',').map(t => t.trim()).filter(Boolean);
+    const tamOpts = tams.map(t => `<option ${t===item.tamanho?'selected':''}>${t}</option>`).join('');
+    return `
     <div class="cart-item">
       <div class="cart-item-img">
         <img src="${item.imagem}" alt="${item.nome}" onerror="this.style.display='none';this.parentElement.textContent='📷';">
       </div>
       <div class="cart-item-info">
         <div class="cart-item-name">${item.nome}</div>
-        <div class="cart-item-meta">${item.tamanho ? item.tamanho+' · ' : ''}${item.cor} · Qtd: ${item.qty}</div>
+        <div style="display:flex;gap:8px;align-items:center;margin:4px 0;flex-wrap:wrap;">
+          <div style="display:flex;align-items:center;gap:4px;">
+            <button onclick="changeQty(${i},-1)" style="background:var(--border);border:none;color:var(--text);width:24px;height:24px;border-radius:4px;cursor:pointer;font-size:14px;">−</button>
+            <span style="min-width:20px;text-align:center;font-size:13px;">${item.qty}</span>
+            <button onclick="changeQty(${i},1)" style="background:var(--border);border:none;color:var(--text);width:24px;height:24px;border-radius:4px;cursor:pointer;font-size:14px;">+</button>
+          </div>
+          ${tams.length > 1 ? `<select onchange="changeSize(${i},this.value)" style="padding:2px 6px;background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:4px;font-size:12px;">${tamOpts}</select>` : `<span style="font-size:12px;color:var(--muted);">${item.tamanho||''}</span>`}
+          <span style="font-size:12px;color:var(--muted);">${item.cor||''}</span>
+        </div>
         <div class="cart-item-price">R$ ${(item.preco * item.qty).toFixed(2).replace('.',',')}</div>
       </div>
       <button class="cart-item-remove" onclick="removeFromCart(${i})">🗑</button>
     </div>
-  `).join('');
+  `}).join('');
   const subtotal = cart.reduce((s,i) => s + i.preco * i.qty, 0);
   document.getElementById('cartTotal').textContent = `R$ ${(subtotal + freteValue).toFixed(2).replace('.',',')}`;
 }
