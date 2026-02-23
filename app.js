@@ -41,6 +41,7 @@ async function init() {
 // ===== RENDER =====
 function renderCategories(cats) {
   const el = document.getElementById('categories');
+  if (!el) return;
   el.innerHTML = `<div class="cat-pill active" onclick="filterCat('Todos')">Todos</div>` +
     cats.map(c => `<div class="cat-pill" onclick="filterCat('${c}')">${c}</div>`).join('');
 }
@@ -235,7 +236,7 @@ async function goCheckout() {
   document.getElementById('checkoutSection').style.display = 'block';
   document.getElementById('productos')?.style && (document.getElementById('productos').style.display = 'none');
   document.querySelector('.hero').style.display = 'none';
-  document.getElementById('categories').parentElement.style.display = 'none';
+  document.getElementById('categories')?.parentElement && (document.getElementById('categories').parentElement.style.display = 'none');
   document.getElementById('produtos').style.display = 'none';
   // Auto-preencher se logado
   if (clienteToken) {
