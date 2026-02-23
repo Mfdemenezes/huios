@@ -243,7 +243,44 @@ function selectFrete(val, label) {
   document.getElementById('cartTotal').textContent = `R$ ${(subtotal + freteValue).toFixed(2).replace('.',',')}`;
   document.querySelectorAll('.frete-option').forEach(el => el.style.borderColor = 'var(--border)');
   event.currentTarget.style.borderColor = 'var(--accent)';
-  showToast(`Frete selecionado: ${label}`);
+  // Atualizar resumo do pedido se visível
+  const summary = document.getElementById('orderSummary');
+  if (summary) {
+    const totalLine = summary.querySelector('.order-line.total span:last-child');
+    if (totalLine) totalLine.textContent = `R$ ${(subtotal + freteValue).toFixed(2).replace('.',',')}`;
+    const freteLine = summary.querySelectorAll('.order-line')[cart.length];
+    if (freteLine) freteLine.querySelector('span:last-child').textContent = `R$ ${freteValue.toFixed(2).replace('.',',')}`;
+  }
+  showToast(`Frete: ${label} — R$ ${val.toFixed(2).replace('.',',')}`);
+}
+
+async function calcFreteCheckout() {
+  const cepEl = document.getElementById('ckCep');
+  document.getElementById('cepInput').value = cepEl.value;
+  const el = document.getElementById('freteCheckout');
+  const cep = cepEl.value.replace(/\D/g,'');
+  if (cep.length !== 8) { showToast('CEP inválido'); return; }
+  el.innerHTML = '<p style="font-size:13px;color:var(--muted);">Calculando...</p>';
+  try {
+    const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+    const data = await res.json();
+    if (data.erro) { el.innerHTML = '<p style="color:#f87171;font-size:13px;">CEP não encontrado</p>'; return; }
+    document.getElementById('ckCity').value = `${data.localidade} - ${data.uf}`;
+    const uf = data.uf;
+    const rj = ['RJ'], sudeste = ['SP','MG','ES'], sul = ['PR','SC','RS'];
+    let sedex, pac, diasSedex, diasPac;
+    if (rj.includes(uf)) { sedex=18.90; pac=12.90; diasSedex='2-3'; diasPac='5-7'; }
+    else if (sudeste.includes(uf)) { sedex=24.90; pac=16.90; diasSedex='3-4'; diasPac='7-10'; }
+    else if (sul.includes(uf)) { sedex=29.90; pac=19.90; diasSedex='4-5'; diasPac='8-12'; }
+    else { sedex=39.90; pac=24.90; diasSedex='5-7'; diasPac='10-15'; }
+    el.innerHTML = `
+      <div class="frete-option" style="cursor:pointer;padding:8px;border-radius:8px;border:1px solid var(--border);margin:4px 0;font-size:13px;" onclick="selectFrete(${pac},'PAC ${diasPac} dias')">
+        📦 PAC (${diasPac} dias) — <strong>R$ ${pac.toFixed(2).replace('.',',')}</strong>
+      </div>
+      <div class="frete-option" style="cursor:pointer;padding:8px;border-radius:8px;border:1px solid var(--border);margin:4px 0;font-size:13px;" onclick="selectFrete(${sedex},'SEDEX ${diasSedex} dias')">
+        🚀 SEDEX (${diasSedex} dias) — <strong>R$ ${sedex.toFixed(2).replace('.',',')}</strong>
+      </div>`;
+  } catch(e) { el.innerHTML = '<p style="color:#f87171;font-size:13px;">Erro ao calcular</p>'; }
 }
 
 // ===== CHECKOUT =====
