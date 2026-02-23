@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Huios Movement — Vista a fé</title>
+  <link rel="stylesheet" href="style.css?v=22">
+  <link rel="icon" href="images/logo.jpg">
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="container header-inner">
+      <a href="/" class="logo"><img src="images/logo.jpg" alt="Huios">HUIOS <span>MOVEMENT</span></a>
+      <button class="menu-toggle" onclick="document.querySelector('nav').classList.toggle('open')">☰</button>
+      <nav>
+        <a href="#" class="active" data-cat="Todos">Todos</a>
+        <a href="#" data-cat="Camisetas">Camisetas</a>
+        <a href="#" data-cat="Bíblias">Bíblias</a>
+        <a href="#" data-cat="Copos">Copos</a>
+        <a href="#" data-cat="Bonés">Bonés</a>
+        <a href="#" data-cat="Gorros">Gorros</a>
+      </nav>
+      <button class="account-btn" id="accountBtn" onclick="toggleAccountMenu()">👤</button>
+      <button class="cart-btn" onclick="toggleCart()">
+        🛒 <span class="cart-count" id="cartCount">0</span>
+      </button>
+    </div>
+    <!-- Account dropdown -->
+    <div class="account-menu" id="accountMenu">
+      <div id="accountLoggedOut">
+        <h3>Entrar na sua conta</h3>
+        <input id="accEmail" type="email" placeholder="Email">
+        <input id="accSenha" type="password" placeholder="Senha">
+        <button class="btn btn-primary" style="width:100%;margin-bottom:8px" onclick="clienteLogin()">Entrar</button>
+        <p style="text-align:center;font-size:13px;color:#888">Não tem conta? <a href="#" onclick="showRegistro()" style="color:#e85d26">Cadastre-se</a></p>
+      </div>
+      <div id="accountRegistro" style="display:none">
+        <h3>Criar conta</h3>
+        <input id="regNome" placeholder="Nome completo">
+        <input id="regEmail" type="email" placeholder="Email">
+        <input id="regWhats" placeholder="WhatsApp (com DDD)">
+        <input id="regSenha" type="password" placeholder="Senha">
+        <button class="btn btn-primary" style="width:100%;margin-bottom:8px" onclick="clienteRegistro()">Cadastrar</button>
+        <p style="text-align:center;font-size:13px;color:#888"><a href="#" onclick="showLogin()" style="color:#e85d26">Já tenho conta</a></p>
+      </div>
+      <div id="accountLoggedIn" style="display:none">
+        <h3 id="accNome"></h3>
+        <a href="#" onclick="showMeusPedidos()" style="display:block;padding:8px 0;color:#f5f5f5">📦 Meus Pedidos</a>
+        <a href="#" onclick="showPerfil()" style="display:block;padding:8px 0;color:#f5f5f5">⚙️ Meu Perfil</a>
+        <button class="btn" style="width:100%;margin-top:8px;background:#1a1a1a;border:1px solid #2a2a2a;color:#f5f5f5" onclick="clienteLogout()">Sair</button>
+      </div>
+      <p id="accErr" style="color:#f87171;font-size:13px;text-align:center;margin-top:8px"></p>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <h1>Vista a <em>fé</em>.<br>Use com <em>propósito</em>.</h1>
+      <p>Produtos exclusivos pra quem vive o que acredita. Feito com amor, entregue com oração.</p>
+    </div>
+  </section>
+
+  <!-- Produtos -->
+  <section id="produtos" class="container" style="padding-top:20px;">
+    <h2 class="section-title">Nossos <span>Produtos</span></h2>
+    <div class="products-grid" id="productsGrid"></div>
+  </section>
+
+  <!-- Modal Produto -->
+  <div class="modal-overlay" id="productModal">
+    <div class="modal" style="position:relative;">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div class="modal-body">
+        <div class="modal-img" id="modalImg">📷</div>
+        <div class="modal-details">
+          <div>
+            <span class="product-cat" id="modalCat"></span>
+            <h2 id="modalName"></h2>
+          </div>
+          <p style="color:var(--muted);font-size:14px;" id="modalDesc"></p>
+          <div class="price" id="modalPrice"></div>
+          <div id="modalSizes" style="display:none;">
+            <div class="options-label">Tamanho</div>
+            <div class="options" id="modalSizesOpts"></div>
+          </div>
+          <div id="modalColors">
+            <div class="options-label">Cor</div>
+            <div class="options" id="modalColorsOpts"></div>
+          </div>
+          <div>
+            <div class="options-label">Quantidade</div>
+            <div class="qty-control">
+              <button class="qty-btn" onclick="changeQty(-1)">−</button>
+              <span class="qty-val" id="modalQty">1</span>
+              <button class="qty-btn" onclick="changeQty(1)">+</button>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-full" onclick="addToCart()">Adicionar ao carrinho</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Carrinho -->
+  <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+  <div class="cart-panel" id="cartPanel">
+    <div class="cart-header">
+      <h3>🛒 Carrinho</h3>
+      <button style="background:none;border:none;color:var(--text);font-size:20px;cursor:pointer;" onclick="toggleCart()">✕</button>
+    </div>
+    <div class="cart-items" id="cartItems">
+      <div class="cart-empty">Seu carrinho está vazio</div>
+    </div>
+    <div class="cart-footer" id="cartFooter" style="display:none;">
+      <div>
+        <div class="options-label" style="margin-bottom:6px;">Calcular frete</div>
+        <div class="frete-box">
+          <input type="text" id="cepInput" placeholder="Digite seu CEP" maxlength="9" oninput="maskCep(this)">
+          <button class="btn btn-sm btn-outline" onclick="calcFrete()">Calcular</button>
+        </div>
+        <div class="frete-result" id="freteResult"></div>
+      </div>
+      <div class="cart-total" style="margin-top:16px;">
+        <span>Total</span>
+        <span id="cartTotal">R$ 0,00</span>
+      </div>
+      <button class="btn btn-primary btn-full" onclick="goCheckout()">Finalizar pedido</button>
+    </div>
+  </div>
+
+  <!-- Checkout (hidden by default) -->
+  <section class="checkout-section container" id="checkoutSection" style="display:none;">
+    <h2 class="section-title">Finalizar <span>Pedido</span></h2>
+    <div class="checkout-form">
+      <div class="order-summary" id="orderSummary"></div>
+      <h3 style="margin-bottom:16px;">Dados de entrega</h3>
+      <div class="form-group">
+        <label>Nome completo</label>
+        <input type="text" id="ckName" required>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>WhatsApp</label>
+          <input type="tel" id="ckPhone" placeholder="(21) 99999-9999">
+        </div>
+        <div class="form-group">
+          <label>E-mail</label>
+          <input type="email" id="ckEmail">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>CEP</label>
+          <input type="text" id="ckCep" maxlength="9">
+        </div>
+        <div class="form-group">
+          <label>Cidade / UF</label>
+          <input type="text" id="ckCity">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Endereço completo</label>
+        <input type="text" id="ckAddress" placeholder="Rua, número, complemento, bairro">
+      </div>
+      <div class="pix-box">
+        <p style="font-size:14px;color:var(--muted);">Pagamento via Pix</p>
+        <div class="pix-key" id="pixKey"></div>
+        <p style="font-size:13px;color:var(--muted);">Copie a chave, faça o Pix e envie o comprovante</p>
+        <button class="btn btn-sm btn-primary copy-btn" onclick="copyPix()">Copiar chave Pix</button>
+      </div>
+      <button class="btn btn-primary btn-full" onclick="sendOrder()" style="font-size:16px;padding:16px;">
+        Enviar pedido via WhatsApp ✅
+      </button>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand">HUIOS MOVEMENT</div>
+          <p>Vista a fé. Use com propósito.<br>Produtos exclusivos para jovens que vivem o que acreditam.</p>
+        </div>
+        <div>
+          <h4>Links</h4>
+          <div class="footer-links">
+            <a href="#produtos">Produtos</a>
+            <a href="#" onclick="filterCat('Camisetas')">Camisetas</a>
+            <a href="#" onclick="filterCat('Bíblias')">Bíblias</a>
+            <a href="#" onclick="filterCat('Copos')">Copos</a>
+          </div>
+        </div>
+        <div>
+          <h4>Redes Sociais</h4>
+          <div class="footer-links">
+            <a href="https://www.instagram.com/huios_mqv/" target="_blank"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:6px"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>Instagram Huios</a>
+            <a href="https://www.instagram.com/mqv_igreja/" target="_blank"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:6px"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>Instagram Igreja MQV</a>
+            <a href="https://www.facebook.com/ChurchMQV" target="_blank"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:6px"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385h-3.047v-3.47h3.047v-2.642c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953h-1.514c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385c5.738-.9 10.126-5.864 10.126-11.854z"/></svg>Facebook MQV</a>
+            <a href="https://www.youtube.com/@MQVigreja" target="_blank"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:6px"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>YouTube MQV</a>
+            <a href="https://www.tiktok.com/@huios_mqv" target="_blank"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:6px"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>TikTok Huios</a>
+          </div>
+        </div>
+        <div>
+          <h4>Contato</h4>
+          <div class="footer-links" id="footerContact"></div>
+        </div>
+      </div>
+      <div class="footer-bottom">© 2026 Huios Movement. Todos os direitos reservados. · <a href="/admin" style="color:#555">Intranet</a></div>
+    </div>
+  </footer>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script src="app.js?v=2"></script>
+</body>
+</html>
