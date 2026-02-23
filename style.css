@@ -129,7 +129,7 @@ nav a:hover, nav a.active { color: var(--accent); }
 .frete-result .frete-option { padding: 8px 0; display: flex; justify-content: space-between; }
 
 /* Checkout */
-.checkout-section { padding: 40px 0; }
+.checkout-section { padding: 40px 0; position: relative; z-index: 1; }
 .checkout-form { max-width: 600px; margin: 0 auto; }
 .form-group { margin-bottom: 16px; }
 .form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
