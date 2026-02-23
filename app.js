@@ -24,7 +24,6 @@ async function init() {
   document.getElementById('pixKey').textContent = STORE.pix;
   document.getElementById('footerContact').innerHTML = `
     <a href="https://wa.me/${STORE.whatsapp}" target="_blank">WhatsApp</a>
-    <a href="https://instagram.com/${STORE.instagram.replace('@','')}" target="_blank">${STORE.instagram}</a>
     <a href="mailto:${STORE.email}">${STORE.email}</a>
   `;
   // Nav category clicks
