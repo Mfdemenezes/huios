@@ -210,25 +210,22 @@ async function calcFrete() {
     else { sedex = 39.90; pac = 24.90; diasSedex = '5-7'; diasPac = '10-15'; }
     // Frete grátis acima de R$200
     const subtotal = cart.reduce((s,i) => s + i.preco * i.qty, 0);
-    const freeShipping = subtotal >= 200;
     el.innerHTML = `
       <p style="margin-bottom:4px;">${data.localidade} - ${data.uf}</p>
       <div class="frete-option" style="cursor:pointer;padding:8px;border-radius:8px;border:1px solid var(--border);margin:4px 0;" onclick="selectFrete(${pac},'PAC ${diasPac} dias')">
-        📦 PAC (${diasPac} dias úteis) — <strong>${freeShipping ? 'GRÁTIS' : 'R$ '+pac.toFixed(2).replace('.',',')}</strong>
+        📦 PAC (${diasPac} dias úteis) — <strong>R$ ${pac.toFixed(2).replace('.',',')}</strong>
       </div>
       <div class="frete-option" style="cursor:pointer;padding:8px;border-radius:8px;border:1px solid var(--border);margin:4px 0;" onclick="selectFrete(${sedex},'SEDEX ${diasSedex} dias')">
-        🚀 SEDEX (${diasSedex} dias úteis) — <strong>${freeShipping ? 'GRÁTIS' : 'R$ '+sedex.toFixed(2).replace('.',',')}</strong>
+        🚀 SEDEX (${diasSedex} dias úteis) — <strong>R$ ${sedex.toFixed(2).replace('.',',')}</strong>
       </div>
-      ${freeShipping ? '<p style="color:var(--success);font-weight:600;margin-top:8px;">🎉 Frete grátis acima de R$ 200!</p>' : '<p style="margin-top:6px;font-size:12px;">Frete grátis acima de R$ 200</p>'}
     `;
-    if (freeShipping) { freteValue = 0; freteLabel = 'Grátis'; }
   } catch(e) { el.innerHTML = '<p style="color:#f87171;">Erro ao calcular frete</p>'; }
 }
 
 function selectFrete(val, label) {
-  const subtotal = cart.reduce((s,i) => s + i.preco * i.qty, 0);
-  freteValue = subtotal >= 200 ? 0 : val;
+  freteValue = val;
   freteLabel = label;
+  const subtotal = cart.reduce((s,i) => s + i.preco * i.qty, 0);
   document.getElementById('cartTotal').textContent = `R$ ${(subtotal + freteValue).toFixed(2).replace('.',',')}`;
   document.querySelectorAll('.frete-option').forEach(el => el.style.borderColor = 'var(--border)');
   event.currentTarget.style.borderColor = 'var(--accent)';
