@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Huios Admin</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#0a0a0a;color:#f5f5f5}
+.login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh}
+.login-box{background:#141414;padding:40px;border-radius:16px;width:360px;border:1px solid #2a2a2a}
+.login-box h1{text-align:center;color:#e85d26;margin-bottom:24px;font-size:24px}
+input,select,textarea{width:100%;padding:10px 12px;border-radius:8px;background:#1a1a1a;border:1px solid #2a2a2a;color:#f5f5f5;font-size:14px;margin-bottom:12px;font-family:inherit}
+button{padding:10px 20px;border-radius:8px;border:none;cursor:pointer;font-weight:600;font-size:14px}
+.btn-p{background:#e85d26;color:#000}.btn-p:hover{background:#ff7a3d}
+.btn-s{background:#1a1a1a;color:#f5f5f5;border:1px solid #2a2a2a}.btn-s:hover{border-color:#e85d26}
+.btn-d{background:#dc2626;color:#fff;font-size:12px;padding:6px 12px}
+.admin{display:none;max-width:1100px;margin:0 auto;padding:20px}
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid #2a2a2a;margin-bottom:24px}
+.topbar h1{color:#e85d26;font-size:22px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.stat{background:#141414;padding:20px;border-radius:12px;border:1px solid #2a2a2a;text-align:center}
+.stat .num{font-size:28px;font-weight:700;color:#e85d26}.stat .lbl{font-size:12px;color:#888;margin-top:4px}
+.tabs{display:flex;gap:8px;margin-bottom:20px}
+.tab{padding:10px 20px;border-radius:8px;background:#1a1a1a;border:1px solid #2a2a2a;cursor:pointer;font-size:14px;font-weight:500}
+.tab.active{background:#e85d26;color:#000;border-color:#e85d26}
+.panel{display:none}.panel.active{display:block}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;padding:10px;color:#888;border-bottom:1px solid #2a2a2a;font-size:12px;text-transform:uppercase}
+td{padding:10px;border-bottom:1px solid #1a1a1a}
+.badge{padding:3px 10px;border-radius:50px;font-size:11px;font-weight:600}
+.badge-ok{background:#166534;color:#4ade80}.badge-pend{background:#854d0e;color:#fbbf24}.badge-off{background:#7f1d1d;color:#fca5a5}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;align-items:center;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:#141414;border-radius:16px;padding:24px;width:500px;max-width:95vw;max-height:90vh;overflow-y:auto;border:1px solid #2a2a2a}
+.modal h2{margin-bottom:16px;font-size:18px}
+label{display:block;font-size:12px;color:#888;margin-bottom:4px;font-weight:600;text-transform:uppercase}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+@media(max-width:768px){.stats{grid-template-columns:repeat(2,1fr)}.row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="loginWrap">
+<div class="login-box">
+  <h1>🔒 Huios Admin</h1>
+  <input id="lUser" placeholder="Usuário">
+  <input id="lPass" type="password" placeholder="Senha">
+  <button class="btn-p" style="width:100%" onclick="doLogin()">Entrar</button>
+  <p id="loginErr" style="color:#f87171;text-align:center;margin-top:8px;font-size:13px"></p>
+</div>
+</div>
+
+<!-- ADMIN -->
+<div class="admin" id="adminPanel">
+<div class="topbar">
+  <h1>Huios Admin</h1>
+  <button class="btn-s" onclick="logout()">Sair</button>
+</div>
+<div class="stats" id="stats"></div>
+<div class="tabs">
+  <div class="tab active" onclick="showTab('produtos')">Produtos</div>
+  <div class="tab" onclick="showTab('categorias')">Categorias</div>
+  <div class="tab" onclick="showTab('pedidos')">Pedidos</div>
+</div>
+
+<!-- PRODUTOS -->
+<div class="panel active" id="tab-produtos">
+  <button class="btn-p" onclick="openProdModal()" style="margin-bottom:16px">+ Novo Produto</button>
+  <table><thead><tr><th>Produto</th><th>Categoria</th><th>Preço</th><th>Estoque</th><th>Destaque</th><th></th></tr></thead>
+  <tbody id="prodTable"></tbody></table>
+</div>
+
+<!-- CATEGORIAS -->
+<div class="panel" id="tab-categorias">
+  <div style="display:flex;gap:8px;margin-bottom:16px">
+    <input id="newCatName" placeholder="Nome da categoria" style="margin:0;flex:1">
+    <button class="btn-p" onclick="addCat()">Adicionar</button>
+  </div>
+  <table><thead><tr><th>Nome</th><th>Ordem</th><th></th></tr></thead>
+  <tbody id="catTable"></tbody></table>
+</div>
+
+<!-- PEDIDOS -->
+<div class="panel" id="tab-pedidos">
+  <table><thead><tr><th>ID</th><th>Cliente</th><th>Total</th><th>Status</th><th>Data</th><th></th></tr></thead>
+  <tbody id="pedTable"></tbody></table>
+</div>
+</div>
+
+<!-- MODAL PRODUTO -->
+<div class="modal-bg" id="prodModal">
+<div class="modal">
+  <h2 id="prodModalTitle">Novo Produto</h2>
+  <input id="pNome" placeholder="Nome do produto">
+  <div class="row">
+    <div><label>Categoria</label><select id="pCat"></select></div>
+    <div><label>Preço</label><input id="pPreco" type="number" step="0.01"></div>
+  </div>
+  <label>Descrição</label><textarea id="pDesc" rows="2"></textarea>
+  <label>URL da Imagem</label><input id="pImg" placeholder="https://...">
+  <div class="row">
+    <div><label>Tamanhos (separados por vírgula)</label><input id="pTam" placeholder="P,M,G,GG"></div>
+    <div><label>Cores (separadas por vírgula)</label><input id="pCor" placeholder="Preta,Branca"></div>
+  </div>
+  <div class="row">
+    <div><label>Estoque</label><input id="pEst" type="number" value="0"></div>
+    <div><label>Destaque</label><select id="pDest"><option value="false">Não</option><option value="true">Sim</option></select></div>
+  </div>
+  <div class="actions">
+    <button class="btn-s" onclick="closeProdModal()">Cancelar</button>
+    <button class="btn-p" onclick="saveProd()">Salvar</button>
+  </div>
+</div>
+</div>
+
+<script>
+const API = window.location.origin + '/api';
+let token = localStorage.getItem('huios_token') || '';
+let editProdId = null;
+let categorias = [];
+
+// AUTH
+async function doLogin() {
+  try {
+    const r = await fetch(API+'/login', {method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({username: document.getElementById('lUser').value, password: document.getElementById('lPass').value})});
+    if (!r.ok) throw new Error();
+    const d = await r.json();
+    token = d.token;
+    localStorage.setItem('huios_token', token);
+    showAdmin();
+  } catch(e) { document.getElementById('loginErr').textContent = 'Usuário ou senha inválidos'; }
+}
+function logout() { token=''; localStorage.removeItem('huios_token'); location.reload(); }
+function headers() { return {'Content-Type':'application/json','Authorization':'Bearer '+token}; }
+
+async function showAdmin() {
+  document.getElementById('loginWrap').style.display = 'none';
+  document.getElementById('adminPanel').style.display = 'block';
+  await loadDashboard();
+  await loadCategorias();
+  await loadProdutos();
+  await loadPedidos();
+}
+
+// DASHBOARD
+async function loadDashboard() {
+  try {
+    const r = await fetch(API+'/dashboard', {headers: headers()});
+    if (r.status === 401) { logout(); return; }
+    const d = await r.json();
+    document.getElementById('stats').innerHTML = `
+      <div class="stat"><div class="num">${d.total_produtos}</div><div class="lbl">Produtos</div></div>
+      <div class="stat"><div class="num">${d.total_pedidos}</div><div class="lbl">Pedidos</div></div>
+      <div class="stat"><div class="num">${d.pendentes}</div><div class="lbl">Pendentes</div></div>
+      <div class="stat"><div class="num">R$ ${d.faturamento.toFixed(2).replace('.',',')}</div><div class="lbl">Faturamento</div></div>`;
+  } catch(e) {}
+}
+
+// TABS
+function showTab(t) {
+  document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(el => el.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('tab-'+t).classList.add('active');
+}
+
+// CATEGORIAS
+async function loadCategorias() {
+  const r = await fetch(API+'/categorias');
+  categorias = await r.json();
+  document.getElementById('catTable').innerHTML = categorias.map(c => `
+    <tr><td>${c.nome}</td><td>${c.ordem}</td><td><button class="btn-d" onclick="delCat(${c.id})">Excluir</button></td></tr>`).join('');
+  document.getElementById('pCat').innerHTML = categorias.map(c => `<option value="${c.id}">${c.nome}</option>`).join('');
+}
+async function addCat() {
+  const nome = document.getElementById('newCatName').value.trim();
+  if (!nome) return;
+  await fetch(API+'/categorias', {method:'POST', headers: headers(), body: JSON.stringify({nome})});
+  document.getElementById('newCatName').value = '';
+  await loadCategorias();
+}
+async function delCat(id) {
+  if (!confirm('Excluir categoria?')) return;
+  await fetch(API+'/categorias/'+id, {method:'DELETE', headers: headers()});
+  await loadCategorias();
+}
+
+// PRODUTOS
+async function loadProdutos() {
+  const r = await fetch(API+'/produtos');
+  const prods = await r.json();
+  document.getElementById('prodTable').innerHTML = prods.map(p => `
+    <tr>
+      <td><strong>${p.nome}</strong></td>
+      <td>${p.categoria}</td>
+      <td>R$ ${p.preco.toFixed(2).replace('.',',')}</td>
+      <td>${p.estoque}</td>
+      <td>${p.destaque ? '<span class="badge badge-ok">Sim</span>' : 'Não'}</td>
+      <td style="display:flex;gap:6px">
+        <button class="btn-s" style="font-size:12px;padding:6px 12px" onclick='editProd(${JSON.stringify(p).replace(/'/g,"&#39;")})'>Editar</button>
+        <button class="btn-d" onclick="delProd(${p.id})">Excluir</button>
+      </td>
+    </tr>`).join('');
+}
+function openProdModal() {
+  editProdId = null;
+  document.getElementById('prodModalTitle').textContent = 'Novo Produto';
+  ['pNome','pPreco','pDesc','pImg','pTam','pCor'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('pEst').value = '0';
+  document.getElementById('pDest').value = 'false';
+  document.getElementById('prodModal').classList.add('open');
+}
+function editProd(p) {
+  editProdId = p.id;
+  document.getElementById('prodModalTitle').textContent = 'Editar Produto';
+  document.getElementById('pNome').value = p.nome;
+  document.getElementById('pCat').value = p.categoria_id;
+  document.getElementById('pPreco').value = p.preco;
+  document.getElementById('pDesc').value = p.descricao || '';
+  document.getElementById('pImg').value = p.imagem || '';
+  document.getElementById('pTam').value = (p.tamanhos||[]).join(',');
+  document.getElementById('pCor').value = (p.cores||[]).join(',');
+  document.getElementById('pEst').value = p.estoque;
+  document.getElementById('pDest').value = p.destaque ? 'true' : 'false';
+  document.getElementById('prodModal').classList.add('open');
+}
+function closeProdModal() { document.getElementById('prodModal').classList.remove('open'); }
+async function saveProd() {
+  const data = {
+    nome: document.getElementById('pNome').value,
+    categoria_id: parseInt(document.getElementById('pCat').value),
+    preco: parseFloat(document.getElementById('pPreco').value),
+    descricao: document.getElementById('pDesc').value,
+    imagem: document.getElementById('pImg').value,
+    tamanhos: document.getElementById('pTam').value.split(',').map(s=>s.trim()).filter(Boolean),
+    cores: document.getElementById('pCor').value.split(',').map(s=>s.trim()).filter(Boolean),
+    estoque: parseInt(document.getElementById('pEst').value) || 0,
+    destaque: document.getElementById('pDest').value === 'true'
+  };
+  if (editProdId) {
+    data.ativo = true;
+    await fetch(API+'/produtos/'+editProdId, {method:'PUT', headers: headers(), body: JSON.stringify(data)});
+  } else {
+    await fetch(API+'/produtos', {method:'POST', headers: headers(), body: JSON.stringify(data)});
+  }
+  closeProdModal();
+  await loadProdutos();
+  await loadDashboard();
+}
+async function delProd(id) {
+  if (!confirm('Excluir produto?')) return;
+  await fetch(API+'/produtos/'+id, {method:'DELETE', headers: headers()});
+  await loadProdutos();
+  await loadDashboard();
+}
+
+// PEDIDOS
+async function loadPedidos() {
+  const r = await fetch(API+'/pedidos', {headers: headers()});
+  const peds = await r.json();
+  document.getElementById('pedTable').innerHTML = peds.map(p => {
+    const badge = p.status==='pendente'?'badge-pend':p.status==='enviado'?'badge-ok':'badge-off';
+    const dt = new Date(p.created_at).toLocaleDateString('pt-BR');
+    return `<tr>
+      <td>#${p.id}</td><td>${p.cliente_nome}<br><small style="color:#888">${p.cliente_whatsapp}</small></td>
+      <td>R$ ${p.total.toFixed(2).replace('.',',')}</td>
+      <td><span class="badge ${badge}">${p.status}</span></td><td>${dt}</td>
+      <td><select onchange="updatePedStatus(${p.id},this.value)" style="padding:4px;background:#1a1a1a;border:1px solid #2a2a2a;color:#f5f5f5;border-radius:4px">
+        <option ${p.status==='pendente'?'selected':''}>pendente</option>
+        <option ${p.status==='pago'?'selected':''}>pago</option>
+        <option ${p.status==='enviado'?'selected':''}>enviado</option>
+        <option ${p.status==='entregue'?'selected':''}>entregue</option>
+        <option ${p.status==='cancelado'?'selected':''}>cancelado</option>
+      </select></td></tr>`;
+  }).join('') || '<tr><td colspan="6" style="text-align:center;color:#888;padding:40px">Nenhum pedido ainda</td></tr>';
+}
+async function updatePedStatus(id, status) {
+  await fetch(API+'/pedidos/'+id+'/status', {method:'PUT', headers: headers(), body: JSON.stringify({status})});
+  await loadDashboard();
+}
+
+// INIT
+if (token) {
+  fetch(API+'/dashboard', {headers: headers()}).then(r => {
+    if (r.ok) showAdmin(); else logout();
+  }).catch(() => logout());
+}
+</script>
+</body>
+</html>

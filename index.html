@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Huios Store — Vista a fé</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✝️</text></svg>">
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="container header-inner">
+      <a href="/" class="logo"><img src="images/logo.jpg" alt="Huios">HUIOS <span>STORE</span></a>
+      <button class="menu-toggle" onclick="document.querySelector('nav').classList.toggle('open')">☰</button>
+      <nav>
+        <a href="#" class="active" data-cat="Todos">Todos</a>
+        <a href="#" data-cat="Camisetas">Camisetas</a>
+        <a href="#" data-cat="Bíblias">Bíblias</a>
+        <a href="#" data-cat="Copos">Copos</a>
+        <a href="#" data-cat="Bonés">Bonés</a>
+        <a href="#" data-cat="Gorros">Gorros</a>
+      </nav>
+      <button class="account-btn" id="accountBtn" onclick="toggleAccountMenu()">👤</button>
+      <button class="cart-btn" onclick="toggleCart()">
+        🛒 <span class="cart-count" id="cartCount">0</span>
+      </button>
+    </div>
+    <!-- Account dropdown -->
+    <div class="account-menu" id="accountMenu">
+      <div id="accountLoggedOut">
+        <h3>Entrar na sua conta</h3>
+        <input id="accEmail" type="email" placeholder="Email">
+        <input id="accSenha" type="password" placeholder="Senha">
+        <button class="btn btn-primary" style="width:100%;margin-bottom:8px" onclick="clienteLogin()">Entrar</button>
+        <p style="text-align:center;font-size:13px;color:#888">Não tem conta? <a href="#" onclick="showRegistro()" style="color:#e85d26">Cadastre-se</a></p>
+      </div>
+      <div id="accountRegistro" style="display:none">
+        <h3>Criar conta</h3>
+        <input id="regNome" placeholder="Nome completo">
+        <input id="regEmail" type="email" placeholder="Email">
+        <input id="regWhats" placeholder="WhatsApp (com DDD)">
+        <input id="regSenha" type="password" placeholder="Senha">
+        <button class="btn btn-primary" style="width:100%;margin-bottom:8px" onclick="clienteRegistro()">Cadastrar</button>
+        <p style="text-align:center;font-size:13px;color:#888"><a href="#" onclick="showLogin()" style="color:#e85d26">Já tenho conta</a></p>
+      </div>
+      <div id="accountLoggedIn" style="display:none">
+        <h3 id="accNome"></h3>
+        <a href="#" onclick="showMeusPedidos()" style="display:block;padding:8px 0;color:#f5f5f5">📦 Meus Pedidos</a>
+        <a href="#" onclick="showPerfil()" style="display:block;padding:8px 0;color:#f5f5f5">⚙️ Meu Perfil</a>
+        <button class="btn" style="width:100%;margin-top:8px;background:#1a1a1a;border:1px solid #2a2a2a;color:#f5f5f5" onclick="clienteLogout()">Sair</button>
+      </div>
+      <p id="accErr" style="color:#f87171;font-size:13px;text-align:center;margin-top:8px"></p>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <h1>Vista a <em>fé</em>.<br>Use com <em>propósito</em>.</h1>
+      <p>Produtos exclusivos pra quem vive o que acredita. Feito com amor, entregue com oração.</p>
+      <a href="#produtos" class="btn btn-primary">Ver produtos ✝️</a>
+    </div>
+  </section>
+
+  <!-- Categorias -->
+  <div class="container">
+    <div class="categories" id="categories"></div>
+  </div>
+
+  <!-- Produtos -->
+  <section id="produtos" class="container" style="padding-top:20px;">
+    <h2 class="section-title">Nossos <span>Produtos</span></h2>
+    <div class="products-grid" id="productsGrid"></div>
+  </section>
+
+  <!-- Modal Produto -->
+  <div class="modal-overlay" id="productModal">
+    <div class="modal" style="position:relative;">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div class="modal-body">
+        <div class="modal-img" id="modalImg">📷</div>
+        <div class="modal-details">
+          <div>
+            <span class="product-cat" id="modalCat"></span>
+            <h2 id="modalName"></h2>
+          </div>
+          <p style="color:var(--muted);font-size:14px;" id="modalDesc"></p>
+          <div class="price" id="modalPrice"></div>
+          <div id="modalSizes" style="display:none;">
+            <div class="options-label">Tamanho</div>
+            <div class="options" id="modalSizesOpts"></div>
+          </div>
+          <div id="modalColors">
+            <div class="options-label">Cor</div>
+            <div class="options" id="modalColorsOpts"></div>
+          </div>
+          <div>
+            <div class="options-label">Quantidade</div>
+            <div class="qty-control">
+              <button class="qty-btn" onclick="changeQty(-1)">−</button>
+              <span class="qty-val" id="modalQty">1</span>
+              <button class="qty-btn" onclick="changeQty(1)">+</button>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-full" onclick="addToCart()">Adicionar ao carrinho</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Carrinho -->
+  <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+  <div class="cart-panel" id="cartPanel">
+    <div class="cart-header">
+      <h3>🛒 Carrinho</h3>
+      <button style="background:none;border:none;color:var(--text);font-size:20px;cursor:pointer;" onclick="toggleCart()">✕</button>
+    </div>
+    <div class="cart-items" id="cartItems">
+      <div class="cart-empty">Seu carrinho está vazio</div>
+    </div>
+    <div class="cart-footer" id="cartFooter" style="display:none;">
+      <div>
+        <div class="options-label" style="margin-bottom:6px;">Calcular frete</div>
+        <div class="frete-box">
+          <input type="text" id="cepInput" placeholder="Digite seu CEP" maxlength="9" oninput="maskCep(this)">
+          <button class="btn btn-sm btn-outline" onclick="calcFrete()">Calcular</button>
+        </div>
+        <div class="frete-result" id="freteResult"></div>
+      </div>
+      <div class="cart-total" style="margin-top:16px;">
+        <span>Total</span>
+        <span id="cartTotal">R$ 0,00</span>
+      </div>
+      <button class="btn btn-primary btn-full" onclick="goCheckout()">Finalizar pedido</button>
+    </div>
+  </div>
+
+  <!-- Checkout (hidden by default) -->
+  <section class="checkout-section container" id="checkoutSection" style="display:none;">
+    <h2 class="section-title">Finalizar <span>Pedido</span></h2>
+    <div class="checkout-form">
+      <div class="order-summary" id="orderSummary"></div>
+      <h3 style="margin-bottom:16px;">Dados de entrega</h3>
+      <div class="form-group">
+        <label>Nome completo</label>
+        <input type="text" id="ckName" required>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>WhatsApp</label>
+          <input type="tel" id="ckPhone" placeholder="(21) 99999-9999">
+        </div>
+        <div class="form-group">
+          <label>E-mail</label>
+          <input type="email" id="ckEmail">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>CEP</label>
+          <input type="text" id="ckCep" maxlength="9">
+        </div>
+        <div class="form-group">
+          <label>Cidade / UF</label>
+          <input type="text" id="ckCity">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Endereço completo</label>
+        <input type="text" id="ckAddress" placeholder="Rua, número, complemento, bairro">
+      </div>
+      <div class="pix-box">
+        <p style="font-size:14px;color:var(--muted);">Pagamento via Pix</p>
+        <div class="pix-key" id="pixKey"></div>
+        <p style="font-size:13px;color:var(--muted);">Copie a chave, faça o Pix e envie o comprovante</p>
+        <button class="btn btn-sm btn-primary copy-btn" onclick="copyPix()">Copiar chave Pix</button>
+      </div>
+      <button class="btn btn-primary btn-full" onclick="sendOrder()" style="font-size:16px;padding:16px;">
+        Enviar pedido via WhatsApp ✅
+      </button>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand">HUIOS STORE</div>
+          <p>Vista a fé. Use com propósito.<br>Produtos exclusivos para jovens que vivem o que acreditam.</p>
+        </div>
+        <div>
+          <h4>Links</h4>
+          <div class="footer-links">
+            <a href="#produtos">Produtos</a>
+            <a href="#" onclick="filterCat('Camisetas')">Camisetas</a>
+            <a href="#" onclick="filterCat('Bíblias')">Bíblias</a>
+            <a href="#" onclick="filterCat('Copos')">Copos</a>
+          </div>
+        </div>
+        <div>
+          <h4>Contato</h4>
+          <div class="footer-links" id="footerContact"></div>
+        </div>
+      </div>
+      <div class="footer-bottom">© 2026 Huios Store. Todos os direitos reservados. · <a href="/admin" style="color:#555">Intranet</a></div>
+    </div>
+  </footer>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

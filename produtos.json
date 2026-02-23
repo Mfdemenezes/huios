@@ -1,0 +1,124 @@
+{
+  "loja": {
+    "nome": "Huios Store",
+    "descricao": "Vista a fé. Use com propósito.",
+    "whatsapp": "5521960192189",
+    "instagram": "@huiosstore",
+    "email": "contato@huiosstore.com.br",
+    "pix": "mfdemenezes@gmail.com",
+    "cep_origem": "26900000"
+  },
+  "categorias": ["Camisetas", "Bíblias", "Copos", "Bonés", "Gorros"],
+  "produtos": [
+    {
+      "id": 1,
+      "nome": "Camiseta Huios Classic",
+      "categoria": "Camisetas",
+      "preco": 79.90,
+      "descricao": "Camiseta 100% algodão com estampa Huios. Conforto e estilo pra quem vive a fé.",
+      "imagem": "images/camiseta-classic.jpg",
+      "tamanhos": ["P", "M", "G", "GG"],
+      "cores": ["Preta", "Branca", "Off-white"],
+      "destaque": true
+    },
+    {
+      "id": 2,
+      "nome": "Camiseta Sal & Luz",
+      "categoria": "Camisetas",
+      "preco": 79.90,
+      "descricao": "Mateus 5:13-14. Seja sal da terra e luz do mundo.",
+      "imagem": "images/camiseta-sal-luz.jpg",
+      "tamanhos": ["P", "M", "G", "GG"],
+      "cores": ["Preta", "Cinza"],
+      "destaque": false
+    },
+    {
+      "id": 3,
+      "nome": "Camiseta Oversized Faith",
+      "categoria": "Camisetas",
+      "preco": 89.90,
+      "descricao": "Modelagem oversized, estampa nas costas. Pra quem curte um visual mais solto.",
+      "imagem": "images/camiseta-oversized.jpg",
+      "tamanhos": ["M", "G", "GG"],
+      "cores": ["Preta", "Bege"],
+      "destaque": true
+    },
+    {
+      "id": 4,
+      "nome": "Bíblia NVI Capa Dura Jovem",
+      "categoria": "Bíblias",
+      "preco": 69.90,
+      "descricao": "Bíblia NVI com capa dura exclusiva Huios. Leitura diária com estilo.",
+      "imagem": "images/biblia-nvi.jpg",
+      "tamanhos": [],
+      "cores": ["Preta", "Rosa"],
+      "destaque": true
+    },
+    {
+      "id": 5,
+      "nome": "Bíblia de Estudo",
+      "categoria": "Bíblias",
+      "preco": 119.90,
+      "descricao": "Bíblia com notas de estudo, mapas e referências cruzadas.",
+      "imagem": "images/biblia-estudo.jpg",
+      "tamanhos": [],
+      "cores": ["Marrom"],
+      "destaque": false
+    },
+    {
+      "id": 6,
+      "nome": "Copo Térmico Huios 600ml",
+      "categoria": "Copos",
+      "preco": 59.90,
+      "descricao": "Aço inox, mantém gelado 12h e quente 6h. Com logo Huios gravado.",
+      "imagem": "images/copo-termico.jpg",
+      "tamanhos": [],
+      "cores": ["Preto", "Branco", "Rose"],
+      "destaque": true
+    },
+    {
+      "id": 7,
+      "nome": "Copo Stanley Style 473ml",
+      "categoria": "Copos",
+      "preco": 49.90,
+      "descricao": "Estilo Stanley com versículo gravado. Tampa com canudo.",
+      "imagem": "images/copo-stanley.jpg",
+      "tamanhos": [],
+      "cores": ["Verde", "Preto"],
+      "destaque": false
+    },
+    {
+      "id": 8,
+      "nome": "Boné Huios Aba Reta",
+      "categoria": "Bonés",
+      "preco": 49.90,
+      "descricao": "Boné aba reta com bordado Huios. Ajuste snapback.",
+      "imagem": "images/bone-aba-reta.jpg",
+      "tamanhos": ["Único"],
+      "cores": ["Preto", "Branco"],
+      "destaque": true
+    },
+    {
+      "id": 9,
+      "nome": "Boné Dad Hat Faith",
+      "categoria": "Bonés",
+      "preco": 44.90,
+      "descricao": "Modelo dad hat, bordado discreto. Casual e confortável.",
+      "imagem": "images/bone-dad-hat.jpg",
+      "tamanhos": ["Único"],
+      "cores": ["Bege", "Preto"],
+      "destaque": false
+    },
+    {
+      "id": 10,
+      "nome": "Gorro Huios Inverno",
+      "categoria": "Gorros",
+      "preco": 39.90,
+      "descricao": "Gorro de tricô com etiqueta Huios. Quentinho e estiloso.",
+      "imagem": "images/gorro-inverno.jpg",
+      "tamanhos": ["Único"],
+      "cores": ["Preto", "Cinza", "Bege"],
+      "destaque": true
+    }
+  ]
+}
