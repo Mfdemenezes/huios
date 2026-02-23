@@ -14,10 +14,17 @@ let freteLabel = '';
 
 // ===== INIT =====
 async function init() {
+  // Tentar API primeiro, fallback pro JSON
+  let produtos = [];
+  try {
+    const r = await fetch(API_URL + '/produtos');
+    produtos = await r.json();
+  } catch(e) {}
+  // Carregar config da loja do JSON
   const res = await fetch('produtos.json');
   const data = await res.json();
   STORE = data.loja;
-  PRODUCTS = data.produtos;
+  PRODUCTS = produtos.length ? produtos.map(p => ({...p, categoria: p.categoria, id: p.id})) : data.produtos;
   renderCategories(data.categorias);
   renderProducts(PRODUCTS);
   updateCartCount();
