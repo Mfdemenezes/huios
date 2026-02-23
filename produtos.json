@@ -8,116 +8,174 @@
     "pix": "mfdemenezes@gmail.com",
     "cep_origem": "26900000"
   },
-  "categorias": ["Camisetas", "Bíblias", "Copos", "Bonés", "Gorros"],
+  "categorias": [
+    "Camisetas",
+    "Bíblias",
+    "Copos",
+    "Bonés",
+    "Gorros"
+  ],
   "produtos": [
     {
       "id": 1,
       "nome": "Camiseta Huios Classic",
       "categoria": "Camisetas",
-      "preco": 79.90,
+      "preco": 79.9,
       "descricao": "Camiseta 100% algodão com estampa Huios. Conforto e estilo pra quem vive a fé.",
-      "imagem": "images/camiseta-classic.jpg",
-      "tamanhos": ["P", "M", "G", "GG"],
-      "cores": ["Preta", "Branca", "Off-white"],
+      "imagem": "https://placehold.co/400x400/1a1a1a/e85d26?text=Camiseta+Huios+Classic",
+      "tamanhos": [
+        "P",
+        "M",
+        "G",
+        "GG"
+      ],
+      "cores": [
+        "Preta",
+        "Branca",
+        "Off-white"
+      ],
       "destaque": true
     },
     {
       "id": 2,
       "nome": "Camiseta Sal & Luz",
       "categoria": "Camisetas",
-      "preco": 79.90,
+      "preco": 79.9,
       "descricao": "Mateus 5:13-14. Seja sal da terra e luz do mundo.",
-      "imagem": "images/camiseta-sal-luz.jpg",
-      "tamanhos": ["P", "M", "G", "GG"],
-      "cores": ["Preta", "Cinza"],
+      "imagem": "https://placehold.co/400x400/1a1a1a/e85d26?text=Camiseta+Sal+&+Luz",
+      "tamanhos": [
+        "P",
+        "M",
+        "G",
+        "GG"
+      ],
+      "cores": [
+        "Preta",
+        "Cinza"
+      ],
       "destaque": false
     },
     {
       "id": 3,
       "nome": "Camiseta Oversized Faith",
       "categoria": "Camisetas",
-      "preco": 89.90,
+      "preco": 89.9,
       "descricao": "Modelagem oversized, estampa nas costas. Pra quem curte um visual mais solto.",
-      "imagem": "images/camiseta-oversized.jpg",
-      "tamanhos": ["M", "G", "GG"],
-      "cores": ["Preta", "Bege"],
+      "imagem": "https://placehold.co/400x400/1a1a1a/e85d26?text=Camiseta+Oversized+Faith",
+      "tamanhos": [
+        "M",
+        "G",
+        "GG"
+      ],
+      "cores": [
+        "Preta",
+        "Bege"
+      ],
       "destaque": true
     },
     {
       "id": 4,
       "nome": "Bíblia NVI Capa Dura Jovem",
       "categoria": "Bíblias",
-      "preco": 69.90,
+      "preco": 69.9,
       "descricao": "Bíblia NVI com capa dura exclusiva Huios. Leitura diária com estilo.",
-      "imagem": "images/biblia-nvi.jpg",
+      "imagem": "https://placehold.co/400x400/1a1a1a/e85d26?text=Bíblia+NVI+Capa+Dura+Jovem",
       "tamanhos": [],
-      "cores": ["Preta", "Rosa"],
+      "cores": [
+        "Preta",
+        "Rosa"
+      ],
       "destaque": true
     },
     {
       "id": 5,
       "nome": "Bíblia de Estudo",
       "categoria": "Bíblias",
-      "preco": 119.90,
+      "preco": 119.9,
       "descricao": "Bíblia com notas de estudo, mapas e referências cruzadas.",
-      "imagem": "images/biblia-estudo.jpg",
+      "imagem": "https://placehold.co/400x400/1a1a1a/e85d26?text=Bíblia+de+Estudo",
       "tamanhos": [],
-      "cores": ["Marrom"],
+      "cores": [
+        "Marrom"
+      ],
       "destaque": false
     },
     {
       "id": 6,
       "nome": "Copo Térmico Huios 600ml",
       "categoria": "Copos",
-      "preco": 59.90,
+      "preco": 59.9,
       "descricao": "Aço inox, mantém gelado 12h e quente 6h. Com logo Huios gravado.",
-      "imagem": "images/copo-termico.jpg",
+      "imagem": "https://placehold.co/400x400/1a1a1a/e85d26?text=Copo+Térmico+Huios+600ml",
       "tamanhos": [],
-      "cores": ["Preto", "Branco", "Rose"],
+      "cores": [
+        "Preto",
+        "Branco",
+        "Rose"
+      ],
       "destaque": true
     },
     {
       "id": 7,
       "nome": "Copo Stanley Style 473ml",
       "categoria": "Copos",
-      "preco": 49.90,
+      "preco": 49.9,
       "descricao": "Estilo Stanley com versículo gravado. Tampa com canudo.",
-      "imagem": "images/copo-stanley.jpg",
+      "imagem": "https://placehold.co/400x400/1a1a1a/e85d26?text=Copo+Stanley+Style+473ml",
       "tamanhos": [],
-      "cores": ["Verde", "Preto"],
+      "cores": [
+        "Verde",
+        "Preto"
+      ],
       "destaque": false
     },
     {
       "id": 8,
       "nome": "Boné Huios Aba Reta",
       "categoria": "Bonés",
-      "preco": 49.90,
+      "preco": 49.9,
       "descricao": "Boné aba reta com bordado Huios. Ajuste snapback.",
-      "imagem": "images/bone-aba-reta.jpg",
-      "tamanhos": ["Único"],
-      "cores": ["Preto", "Branco"],
+      "imagem": "https://placehold.co/400x400/1a1a1a/e85d26?text=Boné+Huios+Aba+Reta",
+      "tamanhos": [
+        "Único"
+      ],
+      "cores": [
+        "Preto",
+        "Branco"
+      ],
       "destaque": true
     },
     {
       "id": 9,
       "nome": "Boné Dad Hat Faith",
       "categoria": "Bonés",
-      "preco": 44.90,
+      "preco": 44.9,
       "descricao": "Modelo dad hat, bordado discreto. Casual e confortável.",
-      "imagem": "images/bone-dad-hat.jpg",
-      "tamanhos": ["Único"],
-      "cores": ["Bege", "Preto"],
+      "imagem": "https://placehold.co/400x400/1a1a1a/e85d26?text=Boné+Dad+Hat+Faith",
+      "tamanhos": [
+        "Único"
+      ],
+      "cores": [
+        "Bege",
+        "Preto"
+      ],
       "destaque": false
     },
     {
       "id": 10,
       "nome": "Gorro Huios Inverno",
       "categoria": "Gorros",
-      "preco": 39.90,
+      "preco": 39.9,
       "descricao": "Gorro de tricô com etiqueta Huios. Quentinho e estiloso.",
-      "imagem": "images/gorro-inverno.jpg",
-      "tamanhos": ["Único"],
-      "cores": ["Preto", "Cinza", "Bege"],
+      "imagem": "https://placehold.co/400x400/1a1a1a/e85d26?text=Gorro+Huios+Inverno",
+      "tamanhos": [
+        "Único"
+      ],
+      "cores": [
+        "Preto",
+        "Cinza",
+        "Bege"
+      ],
       "destaque": true
     }
   ]
