@@ -99,7 +99,14 @@ label{display:block;font-size:12px;color:#888;margin-bottom:4px;font-weight:600;
     <div><label>Preço</label><input id="pPreco" type="number" step="0.01"></div>
   </div>
   <label>Descrição</label><textarea id="pDesc" rows="2"></textarea>
-  <label>URL da Imagem</label><input id="pImg" placeholder="https://...">
+  <label>Imagem</label>
+  <div style="display:flex;gap:8px;margin-bottom:12px">
+    <input id="pImg" placeholder="URL ou faça upload →" style="flex:1;margin:0">
+    <label style="background:#e85d26;color:#000;padding:8px 16px;border-radius:8px;cursor:pointer;font-weight:600;font-size:13px;white-space:nowrap;display:flex;align-items:center">
+      📷 Upload
+      <input type="file" accept="image/*" onchange="uploadImg(this)" style="display:none">
+    </label>
+  </div>
   <div class="row">
     <div><label>Tamanhos (separados por vírgula)</label><input id="pTam" placeholder="P,M,G,GG"></div>
     <div><label>Cores (separadas por vírgula)</label><input id="pCor" placeholder="Preta,Branca"></div>
@@ -286,6 +293,17 @@ async function loadPedidos() {
 async function updatePedStatus(id, status) {
   await fetch(API+'/pedidos/'+id+'/status', {method:'PUT', headers: headers(), body: JSON.stringify({status})});
   await loadDashboard();
+}
+
+// UPLOAD
+async function uploadImg(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const fd = new FormData();
+  fd.append('file', file);
+  const r = await fetch(API+'/upload', {method:'POST', headers:{'Authorization':'Bearer '+token}, body: fd});
+  const d = await r.json();
+  document.getElementById('pImg').value = d.url;
 }
 
 // INIT
