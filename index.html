@@ -55,7 +55,7 @@
     .agenda-card .local { font-size:13px; color:var(--muted); }
 
     /* SOBRE */
-    .sobre-content { display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:center; }
+    .sobre-content { max-width:700px; margin:0 auto; }
     .sobre-text h2 { font-size:28px; font-weight:800; margin-bottom:16px; }
     .sobre-text h2 em { font-style:normal; color:var(--accent); }
     .sobre-text p { color:var(--muted); font-size:15px; margin-bottom:12px; }
@@ -156,14 +156,11 @@
   <!-- SOBRE -->
   <section class="section" id="sobre" style="background:var(--surface);">
     <div class="container sobre-content">
-      <div class="sobre-text">
+      <div class="sobre-text" style="grid-column:1/-1">
         <h2>Quem somos os <em>Huios</em>?</h2>
         <p>Huios é o movimento jovem da Igreja Mais Que Vencedores em Miguel Pereira, RJ. Somos um só corpo, revelando Jesus ao mundo através da comunhão, adoração e propósito.</p>
         <p>Nossos encontros são espaços de transformação — onde jovens e adolescentes se conectam com Deus e uns com os outros.</p>
         <p style="margin-top:16px"><a href="https://www.instagram.com/huios_mqv/" target="_blank" style="color:var(--accent);font-weight:600;">Siga @huios_mqv no Instagram →</a></p>
-      </div>
-      <div class="sobre-img">
-        <img src="images/logo-bg.png" alt="Huios Movement">
       </div>
     </div>
   </section>
