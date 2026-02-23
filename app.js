@@ -227,6 +227,11 @@ function selectFrete(val, label) {
 // ===== CHECKOUT =====
 async function goCheckout() {
   if (cart.length === 0) return;
+  if (!clienteToken) {
+    showToast('Faça login ou cadastre-se para finalizar a compra');
+    document.getElementById('accountMenu').classList.add('open');
+    return;
+  }
   toggleCart();
   document.getElementById('checkoutSection').style.display = 'block';
   document.getElementById('productos')?.style && (document.getElementById('productos').style.display = 'none');
