@@ -67,7 +67,8 @@ Plataforma web do movimento jovem **Huios** da Igreja Mais Que Vencedores (MQV) 
 - Modal de produto com seleção de tamanho/cor
 - Carrinho (localStorage) com resumo e edição
 - Cálculo de frete por CEP (API ViaCEP)
-- Checkout com pagamento Pix
+- Checkout com Mercado Pago (Pix, cartão, boleto) + fallback Pix manual
+- Webhook automático: pagamento aprovado → pedido atualiza pra "pago"
 - **Login obrigatório** para finalizar compra
 - Pedido salvo na API + envio automático via WhatsApp com nº do pedido
 - Auto-preenchimento do checkout com dados do perfil do cliente
@@ -131,6 +132,8 @@ Plataforma web do movimento jovem **Huios** da Igreja Mais Que Vencedores (MQV) 
 ### Outros
 | Endpoint | Método | Descrição |
 |---|---|---|
+| `/api/pagamento` | POST | Criar checkout Mercado Pago |
+| `/api/webhook/mp` | POST | Webhook MP (atualiza status) |
 | `/api/upload` | POST | Upload de imagem (admin) |
 | `/api/dashboard` | GET | Estatísticas (admin) |
 | `/health` | GET | Health check |
