@@ -499,9 +499,17 @@ async function showMeusPedidos() {
     let html = '<h3 style="margin-bottom:12px">Meus Pedidos</h3>';
     if (!peds.length) html += '<p style="color:#888">Nenhum pedido ainda</p>';
     else peds.forEach(p => {
-      html += `<div style="border:1px solid #2a2a2a;border-radius:8px;padding:12px;margin-bottom:8px">`;
-      html += `<strong>#${p.id}</strong> — R$ ${p.total.toFixed(2).replace('.',',')} <span style="color:${p.status==='pendente'?'#fbbf24':'#4ade80'}">${p.status}</span>`;
-      html += `<br><small style="color:#888">${new Date(p.created_at).toLocaleDateString('pt-BR')}</small></div>`;
+      const statusColor = p.status==='pago'||p.status==='entregue'?'#4ade80':p.status==='cancelado'?'#f87171':'#fbbf24';
+      const itensHtml = (p.itens||[]).map(i => `<div style="font-size:12px;color:#ccc;padding:2px 0;">${i.qty}x ${i.nome} ${i.tamanho?'('+i.tamanho+')':''} ${i.cor||''} — R$ ${(i.preco*i.qty).toFixed(2).replace('.',',')}</div>`).join('');
+      html += `<div style="border:1px solid #2a2a2a;border-radius:8px;margin-bottom:8px;overflow:hidden;">`;
+      html += `<div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'" style="padding:12px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;">`;
+      html += `<div><strong>#${p.id}</strong> — <span style="color:var(--accent)">R$ ${p.total.toFixed(2).replace('.',',')}</span><br><small style="color:#888">${new Date(p.created_at).toLocaleDateString('pt-BR')}</small></div>`;
+      html += `<span style="color:${statusColor};font-size:12px;font-weight:600;">${p.status} ▾</span></div>`;
+      html += `<div style="display:none;padding:0 12px 12px;border-top:1px solid #2a2a2a;">`;
+      html += `<div style="margin-top:8px;">${itensHtml}</div>`;
+      html += `<div style="font-size:12px;color:#888;margin-top:6px;">Frete: R$ ${p.frete.toFixed(2).replace('.',',')}</div>`;
+      html += `<div style="font-size:12px;color:#888;">${p.endereco||''} ${p.cidade?'— '+p.cidade:''}</div>`;
+      html += `</div></div>`;
     });
     document.getElementById('accountLoggedIn').innerHTML = html + '<button class="btn" style="width:100%;margin-top:8px;background:#1a1a1a;border:1px solid #2a2a2a;color:#f5f5f5" onclick="updateAccountUI()">Voltar</button>';
   } catch(e) {}
