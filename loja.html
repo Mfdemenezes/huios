@@ -189,14 +189,12 @@
         <label>Endereço completo</label>
         <input type="text" id="ckAddress" placeholder="Rua, número, complemento, bairro">
       </div>
-      <div class="pix-box">
-        <p style="font-size:14px;color:var(--muted);">Pagamento via Pix</p>
-        <div class="pix-key" id="pixKey"></div>
-        <p style="font-size:13px;color:var(--muted);">Copie a chave, faça o Pix e envie o comprovante</p>
-        <button class="btn btn-sm btn-primary copy-btn" onclick="copyPix()">Copiar chave Pix</button>
+      <div style="background:var(--card);border-radius:12px;padding:20px;margin-bottom:20px;border:1px solid var(--border);">
+        <p style="font-size:16px;font-weight:600;margin-bottom:8px;">💳 Pagamento via Mercado Pago</p>
+        <p style="font-size:13px;color:var(--muted);">Pix, cartão de crédito, débito ou boleto — você escolhe na próxima tela</p>
       </div>
       <button class="btn btn-primary btn-full" onclick="sendOrder()" style="font-size:16px;padding:16px;">
-        Enviar pedido via WhatsApp ✅
+        Finalizar e Pagar 💳
       </button>
     </div>
   </section>
@@ -240,6 +238,6 @@
   <!-- Toast -->
   <div class="toast" id="toast"></div>
 
-  <script src="app.js?v=5"></script>
+  <script src="app.js?v=6"></script>
 </body>
 </html>

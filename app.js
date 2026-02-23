@@ -32,7 +32,7 @@ async function init() {
   renderCategories(data.categorias);
   renderProducts(PRODUCTS);
   updateCartCount();
-  document.getElementById('pixKey').textContent = STORE.pix;
+  const pixEl = document.getElementById('pixKey'); if (pixEl) pixEl.textContent = STORE.pix;
   document.getElementById('footerContact').innerHTML = `
     <a href="https://wa.me/${STORE.whatsapp}" target="_blank">WhatsApp</a>
     <a href="mailto:${STORE.email}">${STORE.email}</a>
