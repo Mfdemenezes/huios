@@ -208,7 +208,7 @@ async function calcFrete() {
     else if (sudeste.includes(uf)) { sedex = 24.90; pac = 16.90; diasSedex = '3-4'; diasPac = '7-10'; }
     else if (sul.includes(uf)) { sedex = 29.90; pac = 19.90; diasSedex = '4-5'; diasPac = '8-12'; }
     else { sedex = 39.90; pac = 24.90; diasSedex = '5-7'; diasPac = '10-15'; }
-    // Frete grátis acima de R$200
+    // Frete por região
     const subtotal = cart.reduce((s,i) => s + i.preco * i.qty, 0);
     el.innerHTML = `
       <p style="margin-bottom:4px;">${data.localidade} - ${data.uf}</p>
@@ -274,7 +274,7 @@ async function goCheckout() {
       <span>R$ ${(i.preco*i.qty).toFixed(2).replace('.',',')}</span>
     </div>
   `).join('');
-  html += `<div class="order-line"><span>Frete ${freteLabel||''}</span><span>${freteValue>0?'R$ '+freteValue.toFixed(2).replace('.',','):'Grátis'}</span></div>`;
+  html += `<div class="order-line"><span>Frete ${freteLabel||''}</span><span>R$ ${freteValue.toFixed(2).replace('.',',')}</span></div>`;
   html += `<div class="order-line total"><span>Total</span><span style="color:var(--accent);">R$ ${total.toFixed(2).replace('.',',')}</span></div>`;
   document.getElementById('orderSummary').innerHTML = html;
   if (!document.getElementById('ckCep').value) document.getElementById('ckCep').value = document.getElementById('cepInput')?.value || '';
@@ -327,7 +327,7 @@ async function sendOrder() {
   msg += `*Endereço:*\n${address}\n${city} - CEP: ${cep}\n\n`;
   msg += `*Produtos:*\n`;
   cart.forEach(i => { msg += `• ${i.qty}x ${i.nome} ${i.tamanho?'('+i.tamanho+')':''} ${i.cor} — R$ ${(i.preco*i.qty).toFixed(2).replace('.',',')}\n`; });
-  msg += `\n*Frete:* ${freteValue>0?'R$ '+freteValue.toFixed(2).replace('.',','):'Grátis'} ${freteLabel}\n`;
+  msg += `\n*Frete:* R$ ${freteValue.toFixed(2).replace('.',',')} ${freteLabel}\n`;
   msg += `*Total: R$ ${total.toFixed(2).replace('.',',')}*\n\n`;
   msg += `Pagamento via Pix: ${STORE.pix}`;
   window.open(`https://wa.me/${STORE.whatsapp}?text=${encodeURIComponent(msg)}`, '_blank');
