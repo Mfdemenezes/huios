@@ -418,7 +418,8 @@ function clienteLogout() {
   clienteToken = ''; clienteNome = '';
   localStorage.removeItem('huios_cliente_token');
   localStorage.removeItem('huios_cliente_nome');
-  updateAccountUI();
+  cart = []; saveCart();
+  window.location.href = '/';
 }
 
 function updateAccountUI() {
