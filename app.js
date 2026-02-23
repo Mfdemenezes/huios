@@ -297,6 +297,7 @@ async function sendOrder() {
   const city = document.getElementById('ckCity').value;
   const address = document.getElementById('ckAddress').value;
   if (!name || !phone || !address) { showToast('Preencha todos os campos obrigatórios'); return; }
+  if (!freteLabel) { showToast('Selecione a forma de envio (calcule o frete)'); return; }
   const subtotal = cart.reduce((s,i) => s + i.preco * i.qty, 0);
   const total = subtotal + freteValue;
   const itens = cart.map(i => ({nome:i.nome, qty:i.qty, preco:i.preco, tamanho:i.tamanho||'', cor:i.cor||''}));
